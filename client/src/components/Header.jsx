@@ -32,7 +32,7 @@ const Header = () => {
                                     About
                                 </h1>
                             </Link>
-                            <Link to="sign-in">
+                            <Link to="sign-up">
                                 <h1 className="text-slate-900 font-normal">
                                     SignIn
                                 </h1>
