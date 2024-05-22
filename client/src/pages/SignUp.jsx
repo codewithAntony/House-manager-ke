@@ -1,28 +1,53 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 
 const SignUp = () => {
+    const [formData, setFormData] = useState({});
+    const handleChange = (e) => {
+        setFormData({
+            ...formData,
+            [e.target.id]: e.target.value,
+        });
+    };
+
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+        const res = await fetch('/api/auth/signup', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(formData),
+        });
+        const data = await res.json();
+        console.log(data);
+    };
+
+    console.log(formData);
     return (
         <div className="p-3 max-w-lg mx-auto">
             <h1 className="text-3xl text-center font-semibold pb-3">Sign Up</h1>
-            <form className="flex flex-col gap-3">
+            <form onSubmit={handleSubmit} className="flex flex-col gap-3">
                 <input
                     type="text"
                     placeholder="Username"
                     id="username"
                     className="border p-3 rounded-lg"
+                    onChange={handleChange}
                 />
                 <input
                     type="text"
                     placeholder="Email"
                     id="email"
                     className="border p-3 rounded-lg"
+                    onChange={handleChange}
                 />
                 <input
                     type="text"
                     placeholder="Password"
                     id="password"
                     className="border p-3 rounded-lg"
+                    onChange={handleChange}
                 />
                 <button className="border p-3 rounded-lg bg-[#3C4A5C] text-white font-semibold uppercase hover:opacity-95 disabled:opacity-80">
                     SIGN UP
