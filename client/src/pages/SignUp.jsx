@@ -1,8 +1,11 @@
 import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 
 const SignUp = () => {
     const [formData, setFormData] = useState({});
+    const [error, setError] = useState(null);
+    const [loading, setLoading] = useState(false);
+    const navigate = useNavigate();
     const handleChange = (e) => {
         setFormData({
             ...formData,
@@ -12,18 +15,31 @@ const SignUp = () => {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        const res = await fetch('/api/auth/signup', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(formData),
-        });
-        const data = await res.json();
-        console.log(data);
+        try {
+            setLoading(true);
+            const res = await fetch('/api/auth/signup', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(formData),
+            });
+            const data = await res.json();
+            console.log(data);
+            if (data.success === false) {
+                setLoading(false);
+                setError(data.message);
+                return;
+            }
+            setLoading(false);
+            setError(null);
+            navigate('/sign-in');
+        } catch (error) {
+            setLoading(false);
+            setError(error.message);
+        }
     };
 
-    console.log(formData);
     return (
         <div className="p-3 max-w-lg mx-auto">
             <h1 className="text-3xl text-center font-semibold pb-3">Sign Up</h1>
@@ -36,21 +52,24 @@ const SignUp = () => {
                     onChange={handleChange}
                 />
                 <input
-                    type="text"
+                    type="email"
                     placeholder="Email"
                     id="email"
                     className="border p-3 rounded-lg"
                     onChange={handleChange}
                 />
                 <input
-                    type="text"
+                    type="password"
                     placeholder="Password"
                     id="password"
                     className="border p-3 rounded-lg"
                     onChange={handleChange}
                 />
-                <button className="border p-3 rounded-lg bg-[#3C4A5C] text-white font-semibold uppercase hover:opacity-95 disabled:opacity-80">
-                    SIGN UP
+                <button
+                    disabled={loading}
+                    className="border p-3 rounded-lg bg-[#3C4A5C] text-white font-semibold uppercase hover:opacity-95 disabled:opacity-80"
+                >
+                    {loading ? 'loading...' : 'SIGN UP'}
                 </button>
                 <div className="flex gap-2 mt-5">
                     <p>Have an account?</p>
@@ -58,6 +77,7 @@ const SignUp = () => {
                         <span className="text-blue-700">Sign in</span>
                     </Link>
                 </div>
+                {error && <p className="text-red-500 mt-5">{error}</p>}
             </form>
         </div>
     );
