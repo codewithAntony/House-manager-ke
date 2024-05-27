@@ -44,6 +44,10 @@ const SignIn = () => {
         }
     };
 
+    const handleReset = (e) => {
+        e.preventDefault();
+    };
+
     return (
         <div className="p-3 max-w-lg mx-auto">
             <h1 className="text-3xl text-center font-semibold pb-3">Sign In</h1>
@@ -69,9 +73,14 @@ const SignIn = () => {
                     {loading ? 'loading...' : 'SIGN IN'}
                 </button>
                 <OAuth />
-                <div className="flex gap-2 mt-5">
+                <Link to={'/reset'}>
+                    <p onClick={handleReset} className="text-blue-700 mt-3">
+                        Forgot Password?
+                    </p>
+                </Link>
+                <div className="flex gap-2 mt-3">
                     <p>Dont have an account?</p>
-                    <Link to={'/sign-up'}>
+                    <Link to="/sign-up">
                         <span className="text-blue-700">Sign up</span>
                     </Link>
                 </div>
